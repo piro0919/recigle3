@@ -150,8 +150,18 @@ function Pages(): JSX.Element {
       },
     }) => {
       setHistories(histories.filter((value) => history !== value));
+
+      setInitialSuggestions();
+
+      setTimeout(() => {
+        if (!window.document.activeElement) {
+          return;
+        }
+
+        (window.document.activeElement as HTMLElement).blur();
+      }, 500);
     },
-    [histories, setHistories]
+    [histories, setHistories, setInitialSuggestions]
   );
 
   useEffect(() => {

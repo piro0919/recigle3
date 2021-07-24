@@ -4,7 +4,11 @@ import React, {
   useEffect,
   KeyboardEventHandler,
 } from "react";
-import Autosuggest, { AutosuggestProps, InputProps } from "react-autosuggest";
+import Autosuggest, {
+  AutosuggestProps,
+  InputProps,
+  OnSuggestionsClearRequested,
+} from "react-autosuggest";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import usePwa from "use-pwa";
 import styles from "./style.module.scss";
@@ -59,8 +63,14 @@ function SearchForm({
   const handleChange = useCallback<InputProps<Suggestion>["onChange"]>(
     ({ target }, { newValue, method }) => {
       const {
-        dataset: { search },
+        dataset: { history, search },
       } = target as HTMLElement;
+
+      if (history) {
+        setValue("q", "");
+
+        return;
+      }
 
       setValue("q", newValue);
 
@@ -111,6 +121,19 @@ function SearchForm({
 
     alert("Update failed.");
   }, [unregister]);
+  const handleSuggestionsClearRequested =
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    useCallback<OnSuggestionsClearRequested>(() => {}, []);
+  const handleClickRemoveHistory = useCallback<
+    SuggestionProps[2]["onClickRemoveHistory"]
+  >(
+    (e) => {
+      onClickRemoveHistory(e);
+
+      setValue("q", "");
+    },
+    [onClickRemoveHistory, setValue]
+  );
 
   useEffect(() => {
     setValue("site", site);
@@ -133,12 +156,15 @@ function SearchForm({
               placeholder: "料理名や食材で検索",
               type: "search",
             }}
+            onSuggestionsClearRequested={handleSuggestionsClearRequested}
             onSuggestionsFetchRequested={onSuggestionsFetchRequested}
             renderInputComponent={({ ref, ...props }) => (
               <SearchInput {...props} inputRef={ref} onReset={handleReset} />
             )}
             renderSuggestion={(suggestion, params) =>
-              Suggestion(suggestion, params, { onClickRemoveHistory })
+              Suggestion(suggestion, params, {
+                onClickRemoveHistory: handleClickRemoveHistory,
+              })
             }
             renderSuggestionsContainer={SuggestionsContainer}
             shouldRenderSuggestions={() => true}

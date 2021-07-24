@@ -20,11 +20,13 @@ function Suggestion(
     <div
       className={`${styles.wrapper} ${isHighlighted ? styles.highlighted : ""}`}
     >
-      {type === "history" ? (
-        <FiClock color="#9aa0a6" size={16} />
-      ) : (
-        <MdSearch color="#9aa0a6" size={16} />
-      )}
+      <div className={styles.iconWrapper} data-search="enabled">
+        {type === "history" ? (
+          <FiClock color="#9aa0a6" data-search="enabled" size={16} />
+        ) : (
+          <MdSearch color="#9aa0a6" data-search="enabled" size={16} />
+        )}
+      </div>
       <div className={styles.valueWrapper} data-search="enabled">
         {value}
       </div>
@@ -34,7 +36,7 @@ function Suggestion(
           data-history={value}
           onClick={onClickRemoveHistory}
         >
-          <IoCloseOutline size={20} />
+          <IoCloseOutline data-history={value} size={20} />
         </button>
       ) : null}
     </div>

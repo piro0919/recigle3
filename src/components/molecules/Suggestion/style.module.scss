@@ -1,9 +1,14 @@
 .wrapper {
-  align-items: center;
   display: grid;
-  gap: 12px;
-  grid-template: 36px / auto 1fr auto;
-  padding: 0 16px;
+  grid-template: 36px / 48px 1fr auto;
+  height: 36px;
+}
+
+.iconWrapper,
+.button {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .highlighted {
@@ -15,9 +20,14 @@
   cursor: default;
   display: flex;
   height: 100%;
+  width: 100%;
 }
 
 .button {
+  align-items: center;
   color: #80868b;
+  display: flex;
   font-size: 12px;
+  justify-content: center;
+  width: 48px;
 }
