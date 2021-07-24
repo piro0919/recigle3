@@ -1,4 +1,3 @@
-import NoSSR from "@mpth/react-no-ssr";
 import Document, {
   Html,
   Head,
@@ -7,7 +6,6 @@ import Document, {
   DocumentInitialProps,
   DocumentContext,
 } from "next/document";
-import PWAPrompt from "react-ios-pwa-prompt";
 
 class MyDocument extends Document {
   static async getInitialProps(
@@ -52,9 +50,6 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <NoSSR>
-            <PWAPrompt />
-          </NoSSR>
         </body>
       </Html>
     );
