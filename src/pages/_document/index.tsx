@@ -6,6 +6,7 @@ import Document, {
   DocumentInitialProps,
   DocumentContext,
 } from "next/document";
+import PWAPrompt from "react-ios-pwa-prompt";
 
 class MyDocument extends Document {
   static async getInitialProps(
@@ -50,6 +51,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <PWAPrompt />
         </body>
       </Html>
     );

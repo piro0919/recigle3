@@ -15,3 +15,5 @@ type Suggestion = {
   type: "history" | "search";
   value: string;
 };
+
+declare module "react-ios-pwa-prompt";

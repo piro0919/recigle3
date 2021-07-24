@@ -177,13 +177,8 @@ function SearchForm({
       </div>
       <div className={styles.buttonsWrapper}>
         <Button type="submit">レシグル 検索</Button>
-        {enabledPwa && !isPwa ? (
-          <Button
-            disabled={appinstalled || !canInstallprompt}
-            onClick={showInstallPrompt}
-          >
-            レシグル インストール
-          </Button>
+        {!appinstalled && canInstallprompt && enabledPwa && !isPwa ? (
+          <Button onClick={showInstallPrompt}>レシグル インストール</Button>
         ) : null}
         {enabledUpdate && isPwa ? (
           <Button onClick={handleUpdate}>レシグル アップデート</Button>
