@@ -1,3 +1,4 @@
+import NoSSR from "@mpth/react-no-ssr";
 import Document, {
   Html,
   Head,
@@ -51,7 +52,9 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <PWAPrompt />
+          <NoSSR>
+            <PWAPrompt />
+          </NoSSR>
         </body>
       </Html>
     );
