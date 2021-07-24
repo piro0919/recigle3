@@ -1,0 +1,23 @@
+.wrapper {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template: 36px / auto 1fr auto;
+  padding: 0 16px;
+}
+
+.highlighted {
+  background: #eee;
+}
+
+.valueWrapper {
+  align-items: center;
+  cursor: default;
+  display: flex;
+  height: 100%;
+}
+
+.button {
+  color: #80868b;
+  font-size: 12px;
+}

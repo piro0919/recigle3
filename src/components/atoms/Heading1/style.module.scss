@@ -1,0 +1,30 @@
+@import 'sass-mq';
+@import 'styles/constants';
+
+.heading1 {
+  font-family: 'shimizu', sans-serif;
+
+  @include mq($until: tablet) {
+    font-size: 7.2rem;
+  }
+
+  @include mq($from: tablet) {
+    font-size: 8rem;
+  }
+}
+
+.re {
+  color: #ea4335;
+}
+
+.shi {
+  color: #fbbc05;
+}
+
+.gu {
+  color: #34a853;
+}
+
+.ru {
+  color: #ea4335;
+}
