@@ -155,7 +155,7 @@
   "name": "recigle3",
   "private": true,
   "resolutions": {
-    "sass": "1.32.13"
+    "sass": "1.36.0"
   },
   "scripts": {
     "build": "next build",
