@@ -26,12 +26,12 @@ function Top({
   const {
     i18n: { language },
   } = useTranslation("common");
-  const { windowHeight } = useWindowSize();
+  const { innerHeight } = useWindowSize();
   const wrapperStyle = useMemo<CSSProperties>(
     () => ({
-      height: `${typeof windowHeight === "number" ? windowHeight : 0}px`,
+      height: `${typeof innerHeight === "number" ? innerHeight : 0}px`,
     }),
-    [windowHeight]
+    [innerHeight]
   );
 
   return (
