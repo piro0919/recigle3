@@ -154,9 +154,15 @@
   },
   "name": "recigle3",
   "private": true,
+  "resolutions": {
+    "sass": "1.32.13"
+  },
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "lint:es": "eslint src --ext .ts,.tsx --fix",
+    "lint:style": "stylelint 'src/**/*.scss' --fix",
+    "preinstall": "npx npm-force-resolutions",
     "start": "next start"
   },
   "stylelint": {

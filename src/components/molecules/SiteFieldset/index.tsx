@@ -1,19 +1,26 @@
 import React, { useMemo } from "react";
 import { Container, Row, Col, useScreenClass } from "react-grid-system";
-import ReactThreeToggle, { ReactThreeToggleProps } from "react-three-toggle";
 import styles from "./style.module.scss";
+import ThreeToggle, { ThreeToggleProps } from "components/atoms/ThreeToggle";
 
-type Site = Pick<ReactThreeToggleProps, "onChange"> & {
+type Site = Pick<ThreeToggleProps, "onChange"> & {
   initialValue: "false" | "true" | "";
   label: string;
   name: SiteName;
 };
 
-export type SiteFieldsetProps = {
+export type SiteFieldsetProps = Pick<
+  ThreeToggleProps,
+  "styleList" | "values"
+> & {
   sites: Site[];
 };
 
-function SiteFieldset({ sites }: SiteFieldsetProps): JSX.Element {
+function SiteFieldset({
+  sites,
+  styleList,
+  values,
+}: SiteFieldsetProps): JSX.Element {
   const screenClass = useScreenClass();
   const perCount = useMemo(
     () => (["xs"].includes(screenClass) ? 2 : 3),
@@ -29,16 +36,15 @@ function SiteFieldset({ sites }: SiteFieldsetProps): JSX.Element {
               : [...previousValue, sites.slice(index, index + perCount)],
           []
         )
-        .map((sites, index) => {
+        .map((sites) => {
+          const { name } = sites[0];
           const cols = sites.map(({ initialValue, label, name, onChange }) => (
             <Col className={styles.col} key={name} sm={4} xs={6}>
-              <ReactThreeToggle
-                height={10}
+              <ThreeToggle
                 initialValue={initialValue}
-                isWrap={true}
                 onChange={onChange}
-                values={["false", "", "true"]}
-                width={30}
+                styleList={styleList}
+                values={values}
               />
               <label className={styles.label} htmlFor={name}>
                 {label}
@@ -47,12 +53,12 @@ function SiteFieldset({ sites }: SiteFieldsetProps): JSX.Element {
           ));
 
           return (
-            <Row align="center" className={styles.row} key={index}>
+            <Row align="center" className={styles.row} key={name}>
               {cols}
             </Row>
           );
         }),
-    [perCount, sites]
+    [perCount, sites, styleList, values]
   );
 
   return (

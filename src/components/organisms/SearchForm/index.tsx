@@ -54,6 +54,31 @@ function SearchForm({
       ),
     [sites]
   );
+  const [siteValues, siteStyleList] = useMemo<
+    [SiteFieldsetProps["values"], SiteFieldsetProps["styleList"]]
+  >(
+    () => [
+      ["false", "", "true"],
+      [
+        {
+          selectedStyle: {
+            background: "#ea4335",
+          },
+        },
+        {
+          selectedStyle: {
+            background: "#fbbc05",
+          },
+        },
+        {
+          selectedStyle: {
+            background: "#34a853",
+          },
+        },
+      ],
+    ],
+    []
+  );
   const { control, handleSubmit, setValue } = useForm<FieldValues>({
     defaultValues: {
       site,
@@ -173,7 +198,11 @@ function SearchForm({
         )}
       />
       <div className={styles.fieldsetWrapper}>
-        <SiteFieldset sites={sites} />
+        <SiteFieldset
+          sites={sites}
+          styleList={siteStyleList}
+          values={siteValues}
+        />
       </div>
       <div className={styles.buttonsWrapper}>
         <Button type="submit">レシグル 検索</Button>
