@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import React, {
   useCallback,
   useMemo,
@@ -10,6 +11,7 @@ import Autosuggest, {
   OnSuggestionsClearRequested,
 } from "react-autosuggest";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import swal from "sweetalert";
 import usePwa from "use-pwa";
 import styles from "./style.module.scss";
 import Button from "components/atoms/Button";
@@ -24,7 +26,7 @@ import SuggestionsContainer from "components/molecules/SuggestionsContainer";
 
 type FieldValues = {
   q: string;
-  site: Record<SiteName, "false" | "true" | "">;
+  site: Record<string, "false" | "true" | "">;
 };
 
 export type SearchFormProps = Pick<SiteFieldsetProps, "sites"> &
@@ -43,6 +45,7 @@ function SearchForm({
   sites,
   suggestions,
 }: SearchFormProps): JSX.Element {
+  const { t } = useTranslation("common");
   const site = useMemo(
     () =>
       sites.reduce(
@@ -137,15 +140,23 @@ function SearchForm({
     const result = await unregister();
 
     if (result) {
-      alert("The update was successful, restart the app.");
+      await swal(
+        t("アップデートが完了しました"),
+        t("このページを再読み込みします。"),
+        "success"
+      );
 
       window.location.reload();
 
       return;
     }
 
-    alert("Update failed.");
-  }, [unregister]);
+    await swal(
+      t("アップデートに失敗しました"),
+      t("アップデート中にエラーが起きました。"),
+      "error"
+    );
+  }, [t, unregister]);
   const handleSuggestionsClearRequested =
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     useCallback<OnSuggestionsClearRequested>(() => {}, []);
@@ -178,7 +189,7 @@ function SearchForm({
               value,
               onChange: handleChange,
               onKeyDown: handleKeyDown,
-              placeholder: "料理名や食材で検索",
+              placeholder: t("料理名や食材で検索"),
               type: "search",
             }}
             onSuggestionsClearRequested={handleSuggestionsClearRequested}
@@ -205,12 +216,14 @@ function SearchForm({
         />
       </div>
       <div className={styles.buttonsWrapper}>
-        <Button type="submit">レシグル 検索</Button>
+        <Button type="submit">{t("レシグル 検索")}</Button>
         {!appinstalled && canInstallprompt && enabledPwa && !isPwa ? (
-          <Button onClick={showInstallPrompt}>レシグル インストール</Button>
+          <Button onClick={showInstallPrompt}>
+            {t("レシグル インストール")}
+          </Button>
         ) : null}
         {enabledUpdate && isPwa ? (
-          <Button onClick={handleUpdate}>レシグル アップデート</Button>
+          <Button onClick={handleUpdate}>{t("レシグル アップデート")}</Button>
         ) : null}
       </div>
     </form>

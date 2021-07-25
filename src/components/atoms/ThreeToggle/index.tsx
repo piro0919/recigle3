@@ -14,7 +14,14 @@ function ThreeToggle({
   styleList,
   values,
 }: ThreeToggleProps): JSX.Element {
-  const [style, setStyle] = useState<ReactThreeToggleProps["style"]>();
+  const setStyleCallback = useCallback(() => {
+    const index = values.findIndex((value) => initialValue === value);
+
+    return styleList[index];
+  }, [initialValue, styleList, values]);
+  const [style, setStyle] = useState<ReactThreeToggleProps["style"]>(
+    setStyleCallback()
+  );
   const handleChange = useCallback<
     NonNullable<ReactThreeToggleProps["onChange"]>
   >(
@@ -33,10 +40,10 @@ function ThreeToggle({
   );
 
   useEffect(() => {
-    const index = values.findIndex((value) => initialValue === value);
+    const style = setStyleCallback();
 
-    setStyle(styleList[index]);
-  }, [initialValue, styleList, values]);
+    setStyle(style);
+  }, [setStyleCallback]);
 
   return (
     <ReactThreeToggle

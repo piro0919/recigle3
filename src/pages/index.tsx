@@ -1,24 +1,38 @@
 import axios from "axios";
+import { GetServerSideProps } from "next";
+import { SSRConfig, useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import React, { useCallback, useMemo, useEffect, useState } from "react";
 import { useStorageState } from "react-storage-hooks";
 import { useDebounce } from "rooks";
-import sites from "./jsons/sites.json";
+import { i18n } from "../../next-i18next.config";
+import sitesEn from "./jsons/en/sites.json";
+import sitesJa from "./jsons/ja/sites.json";
 import Top, { TopProps } from "components/templates/Top";
 
-function Pages(): JSX.Element {
+export type PagesProps = SSRConfig;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function Pages(_: PagesProps): JSX.Element {
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation("common");
+  const sites = useMemo(
+    () => (language === "ja" ? sitesJa : sitesEn),
+    [language]
+  );
   const defaultSite = useMemo(
     () =>
       sites.reduce(
         (previousValue, { name }) => ({
           ...previousValue,
-          [name as SiteName]: "",
+          [name]: "",
         }),
-        {} as {
-          [K in SiteName]: "";
-        }
+        {}
       ),
-    []
+    [sites]
   );
   const storage = useMemo<Parameters<typeof useStorageState>[0]>(
     () =>
@@ -33,12 +47,17 @@ function Pages(): JSX.Element {
         : window.localStorage,
     []
   );
+  const [siteKey, historiesKey] = useMemo(
+    () =>
+      language === "ja" ? ["site", "histories"] : ["siteEn", "historiesEn"],
+    [language]
+  );
   const [site, setSite] = useStorageState<
-    { [K in SiteName]: "false" | "true" | "" }
-  >(storage, "site", defaultSite);
+    { [K in string]: "false" | "true" | "" }
+  >(storage, siteKey, defaultSite);
   const [histories, setHistories] = useStorageState<string[]>(
     storage,
-    "histories",
+    historiesKey,
     []
   );
   const handleSearch = useCallback<TopProps["onSubmit"]>(
@@ -49,7 +68,7 @@ function Pages(): JSX.Element {
 
       const convertSiteQuery = (v: "true" | "false") =>
         Object.keys(site)
-          .filter((key) => site[key as SiteName] === v)
+          .filter((key) => site[key] === v)
           .map((key) => {
             const foundSite = sites.find(({ name }) => key === name);
 
@@ -62,9 +81,9 @@ function Pages(): JSX.Element {
             return `${v === "true" ? "" : "-"}${label}`;
           })
           .join(" ");
-      const query = `${convertSiteQuery("true") || "レシピ"} ${convertSiteQuery(
-        "false"
-      )} ${q}`.replace(/\s+/g, " ");
+      const query = `${
+        convertSiteQuery("true") || t("レシピ")
+      } ${convertSiteQuery("false")} ${q}`.replace(/\s+/g, " ");
 
       setHistories(
         Array.from(
@@ -76,9 +95,13 @@ function Pages(): JSX.Element {
         )
       );
 
-      window.open(`http://www.google.co.jp/search?num=100&q=${query}`);
+      window.open(
+        `http://www.google.${
+          language === "ja" ? "co.jp" : "com"
+        }/search?num=100&q=${query}`
+      );
     },
-    [histories, setHistories]
+    [histories, language, setHistories, sites, t]
   );
   const [topSites, setTopSites] = useState<TopProps["sites"]>([]);
   const [suggestions, setSuggestions] = useState<TopProps["suggestions"]>([]);
@@ -106,7 +129,7 @@ function Pages(): JSX.Element {
 
       const { data } = await axios.get("/api/search", {
         params: {
-          q: `レシピ ${value}`,
+          q: `${t("レシピ")} ${value}`,
         },
       });
       const suggestions = data
@@ -117,7 +140,7 @@ function Pages(): JSX.Element {
         })
         .map((value: string) => ({
           type: "search",
-          value: value.replace("レシピ", "").trim(),
+          value: value.replace(t("レシピ"), "").trim(),
         }));
 
       setSuggestions(
@@ -137,7 +160,7 @@ function Pages(): JSX.Element {
         ].filter((_, index) => index < 10)
       );
     },
-    [histories, setInitialSuggestions]
+    [histories, setInitialSuggestions, t]
   );
   const handleSuggestionsFetchRequestedDebounce = useDebounce(
     handleSuggestionsFetchRequested,
@@ -159,7 +182,7 @@ function Pages(): JSX.Element {
         }
 
         (window.document.activeElement as HTMLElement).blur();
-      }, 500);
+      }, 250);
     },
     [histories, setHistories, setInitialSuggestions]
   );
@@ -187,22 +210,33 @@ function Pages(): JSX.Element {
     setTopSites(
       sites.map(({ label, name }) => ({
         label,
-        initialValue: site[name as SiteName],
-        name: name as SiteName,
+        name,
+        initialValue: site[name],
         onChange: (value) => {
           setSite((prevSite) => ({
             ...prevSite,
-            [name]: value,
+            [name]: value as never,
           }));
         },
       }))
     );
-  }, [setSite, site, topSites]);
+  }, [setSite, site, sites, topSites]);
 
   return (
     <>
       <Head>
-        <title>レシグル | レシピをGoogle検索する</title>
+        <meta content={t("レシグル")} name="application-name" />
+        <meta content={t("レシグル")} name="apple-mobile-web-app-title" />
+        <meta content={t("レシピをGoogle検索する")} name="description" />
+        <meta content={t("レシグル")} name="twitter:title" />
+        <meta
+          content={t("レシピをGoogle検索する")}
+          name="twitter:description"
+        />
+        <meta content={t("レシグル")} property="og:title" />
+        <meta content={t("レシピをGoogle検索する")} property="og:description" />
+        <meta content={t("レシグル")} property="og:site_name" />
+        <title>{`${t("レシグル")} | ${t("レシピをGoogle検索する")}`}</title>
       </Head>
       <Top
         onClickRemoveHistory={handleRemoveHistory}
@@ -214,5 +248,15 @@ function Pages(): JSX.Element {
     </>
   );
 }
+
+export type ServerSideProps = PagesProps;
+
+export const getStaticProps: GetServerSideProps<ServerSideProps> = async ({
+  locale,
+}) => ({
+  props: {
+    ...(await serverSideTranslations(locale || i18n.defaultLocale, ["common"])),
+  },
+});
 
 export default Pages;

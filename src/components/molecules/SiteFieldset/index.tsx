@@ -6,7 +6,7 @@ import ThreeToggle, { ThreeToggleProps } from "components/atoms/ThreeToggle";
 type Site = Pick<ThreeToggleProps, "onChange"> & {
   initialValue: "false" | "true" | "";
   label: string;
-  name: SiteName;
+  name: string;
 };
 
 export type SiteFieldsetProps = Pick<

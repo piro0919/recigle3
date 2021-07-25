@@ -1,7 +1,9 @@
 import NoSSR from "@mpth/react-no-ssr";
+import { Trans, useTranslation } from "next-i18next";
 import React, { CSSProperties, useMemo } from "react";
 import styles from "./style.module.scss";
 import Heading1 from "components/atoms/Heading1";
+import Link from "components/atoms/Link";
 import SearchForm, { SearchFormProps } from "components/organisms/SearchForm";
 import useWindowSize from "hooks/useWindowSize";
 
@@ -21,6 +23,9 @@ function Top({
   sites,
   suggestions,
 }: TopProps): JSX.Element {
+  const {
+    i18n: { language },
+  } = useTranslation("common");
   const { windowHeight } = useWindowSize();
   const wrapperStyle = useMemo<CSSProperties>(
     () => ({
@@ -43,6 +48,19 @@ function Top({
             sites={sites}
             suggestions={suggestions}
           />
+          <p className={styles.availableFollowingLanguages}>
+            <Trans
+              components={[
+                <Link
+                  href="/"
+                  key="レシグルは次の言語でもご利用いただけます"
+                  locale={language === "ja" ? "en" : "ja"}
+                />,
+              ]}
+              i18nKey="レシグルは次の言語でもご利用いただけます"
+              values={{ language: language === "ja" ? "English" : "日本語" }}
+            />
+          </p>
         </div>
       </div>
     </NoSSR>

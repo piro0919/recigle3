@@ -1,3 +1,4 @@
+import { appWithTranslation, SSRConfig } from "next-i18next";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
@@ -10,7 +11,11 @@ const PWAPrompt = dynamic(() => import("react-ios-pwa-prompt"), {
   ssr: false,
 });
 
-function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+export type MyAppProps = AppProps & {
+  pageProps: SSRConfig;
+};
+
+function MyApp({ Component, pageProps }: MyAppProps): JSX.Element {
   useEffect(() => {
     setConfiguration({ gutterWidth: 8, maxScreenClass: "xl" });
   }, []);
@@ -22,4 +27,4 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     </>
   );
 }
-export default MyApp;
+export default appWithTranslation(MyApp);
