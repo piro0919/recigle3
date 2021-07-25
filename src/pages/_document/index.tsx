@@ -46,6 +46,10 @@ class MyDocument extends Document {
             content="https://recigle.kk-web.link/logo512.png"
             property="og:image"
           />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />

@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }: MyAppProps): JSX.Element {
           "1) （四角から矢印が飛び出したマーク）をタップします。"
         )}
         copyTitle={t("ホーム画面に追加") || undefined}
-        debug={process.env.NODE_ENV === "development" && true}
+        debug={process.env.NODE_ENV === "development" && false}
       />
     </>
   );
